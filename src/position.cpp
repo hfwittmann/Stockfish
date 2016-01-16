@@ -1064,23 +1064,28 @@ Value Position::see(Move m) const {
 
 /// Position::is_draw() tests whether the position is drawn by 50-move rule
 /// or by repetition. It does not detect stalemates.
-
+template<bool PvNode>
 bool Position::is_draw() const {
 
   if (st->rule50 > 99 && (!checkers() || MoveList<LEGAL>(*this).size()))
       return true;
 
+  int cnt = 0;
   StateInfo* stp = st;
   for (int i = 2, e = std::min(st->rule50, st->pliesFromNull); i <= e; i += 2)
   {
       stp = stp->previous->previous;
 
       if (stp->key == st->key)
-          return true; // Draw at first repetition
+          if (!PvNode || ++cnt > 1)
+              return true; // Draw at first repetition in non-PV nodes
   }
 
   return false;
 }
+
+template bool Position::is_draw< true>() const;
+template bool Position::is_draw<false>() const;
 
 
 /// Position::flip() flips position with the white and black sides reversed. This

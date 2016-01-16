@@ -167,10 +167,10 @@ public:
   Thread* this_thread() const;
   uint64_t nodes_searched() const;
   void set_nodes_searched(uint64_t n);
-  bool is_draw() const;
   int rule50_count() const;
   Score psq_score() const;
   Value non_pawn_material(Color c) const;
+  template<bool PvNode> bool is_draw() const;
 
   // Position consistency check, for debugging
   bool pos_is_ok(int* failedStep = nullptr) const;
